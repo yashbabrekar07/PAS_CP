@@ -1,0 +1,101 @@
+Timestamp,Student_Name,Gender,Department,Year_of_Study,Accommodation,Primary_App,Daily_Transactions_Count,Monthly_Digital_Spend,Digital_Payment_Pct,Impulse_Spending,Payment_Failures_Past_Month
+2026/10/12 09:14:22,Aarav Sharma,Male,Computer Science,2nd Year,Hostel,Google Pay,4,4800,85,High,1
+2026/10/12 09:18:45,Ananya Verma,Female,Information Tech,3rd Year,Day Scholar,PhonePe,2,2400,70,Low,0
+2026/10/12 09:25:10,Rohan Patel,Male,Electronics & Comm,1st Year,Hostel,PhonePe,5,5600,90,High,2
+2026/10/12 09:31:02,Priya Iyer,Female,Computer Science,2nd Year,Day Scholar,Google Pay,3,3100,75,Low,0
+2026/10/12 09:44:19,Siddharth Gupta,Male,Mechanical Engg,4th Year,Hostel,Paytm,3,4100,80,Low,1
+2026/10/12 09:52:33,Sneha Nair,Female,Commerce & Mgmt,1st Year,Hostel,Google Pay,4,4500,88,High,0
+2026/10/12 10:05:14,Varun Singh,Male,Civil Engg,3rd Year,Day Scholar,PhonePe,1,1800,60,Low,0
+2026/10/12 10:12:40,Kavya Reddy,Female,Biotechnology,4th Year,Day Scholar,Google Pay,2,2700,72,Low,1
+2026/10/12 10:20:55,Harsh Banerjee,Male,Computer Science,2nd Year,Hostel,Google Pay,6,5900,92,High,3
+2026/10/12 10:28:12,Ishita Rao,Female,Information Tech,2nd Year,Hostel,PhonePe,4,4300,85,High,1
+2026/10/12 10:35:48,Devansh Joshi,Male,Economics,3rd Year,Day Scholar,Paytm,3,3200,78,Low,0
+2026/10/12 10:42:01,Tanvi Mehta,Female,Computer Science,1st Year,Day Scholar,Google Pay,2,2100,65,Low,0
+2026/10/12 10:55:18,Tanmay Kulkarni,Male,Mechanical Engg,4th Year,Hostel,PhonePe,4,4700,84,High,2
+2026/10/12 11:04:30,Pooja Das,Female,Electronics & Comm,3rd Year,Hostel,Google Pay,5,5200,90,High,1
+2026/10/12 11:15:22,Nikhil Mishra,Male,Commerce & Mgmt,1st Year,Day Scholar,PhonePe,2,2600,68,Low,1
+2026/10/12 11:22:45,Shreya Sen,Female,Computer Science,2nd Year,Hostel,Paytm,3,3900,82,Low,0
+2026/10/12 11:36:10,Ayush Choudhury,Male,Information Tech,3rd Year,Hostel,Google Pay,5,5400,91,High,2
+2026/10/12 11:48:02,Disha Saxena,Female,Economics,4th Year,Day Scholar,PhonePe,1,1900,62,Low,0
+2026/10/12 12:02:15,Pranav Bhat,Male,Civil Engg,2nd Year,Day Scholar,Google Pay,3,3000,75,High,1
+2026/10/12 12:14:40,Neha Pillai,Female,Computer Science,1st Year,Hostel,PhonePe,4,4600,86,High,1
+2026/10/12 12:28:55,Yash Agarwal,Male,Mechanical Engg,4th Year,Hostel,Google Pay,6,6100,95,High,2
+2026/10/12 12:35:10,Anjali Trivedi,Female,Commerce & Mgmt,3rd Year,Day Scholar,Paytm,2,2500,70,Low,0
+2026/10/12 12:49:25,Ritwik Deshmukh,Male,Electronics & Comm,1st Year,Hostel,PhonePe,3,4200,83,Low,1
+2026/10/12 13:05:00,Aditi Pandey,Female,Information Tech,2nd Year,Day Scholar,Google Pay,2,2300,66,Low,0
+2026/10/12 13:18:42,Kunal Menon,Male,Computer Science,3rd Year,Hostel,Google Pay,5,5300,89,High,1
+2026/10/12 13:30:15,Meera Kapoor,Female,Biotechnology,4th Year,Hostel,PhonePe,4,4400,84,High,0
+2026/10/12 13:42:33,Mayank Goswami,Male,Civil Engg,2nd Year,Day Scholar,PhonePe,3,3100,74,Low,1
+2026/10/12 13:56:18,Ritu Jha,Female,Economics,1st Year,Day Scholar,Google Pay,1,1700,58,Low,0
+2026/10/12 14:10:45,Arnav Bhatia,Male,Computer Science,4th Year,Hostel,Paytm,4,4600,87,High,2
+2026/10/12 14:24:02,Divya Chauhan,Female,Information Tech,3rd Year,Hostel,Google Pay,3,3800,80,Low,0
+2026/10/12 14:38:19,Tushar Rathi,Male,Mechanical Engg,1st Year,Day Scholar,PhonePe,2,2800,71,Low,0
+2026/10/12 14:50:35,Simran Tiwari,Female,Computer Science,2nd Year,Hostel,Google Pay,5,5100,90,High,1
+2026/10/12 15:05:12,Aniket Hegde,Male,Electronics & Comm,3rd Year,Hostel,PhonePe,4,4500,85,High,3
+2026/10/12 15:18:40,Kriti Sethi,Female,Commerce & Mgmt,4th Year,Day Scholar,Google Pay,2,2200,64,Low,0
+2026/10/12 15:32:05,Shreyas Dutta,Male,Information Tech,2nd Year,Hostel,Paytm,5,5500,91,High,1
+2026/10/12 15:45:20,Nandini Nambiar,Female,Civil Engg,1st Year,Hostel,PhonePe,3,4000,81,Low,1
+2026/10/12 16:02:44,Mohit Shukla,Male,Mechanical Engg,4th Year,Day Scholar,Google Pay,3,3300,76,High,0
+2026/10/12 16:15:10,Mansi Roy,Female,Computer Science,3rd Year,Day Scholar,PhonePe,2,2600,69,Low,0
+2026/10/12 16:28:35,Ishan Kashyap,Male,Electronics & Comm,1st Year,Hostel,Google Pay,6,6300,94,High,2
+2026/10/12 16:40:50,Shruti Somani,Female,Biotechnology,2nd Year,Hostel,PhonePe,4,4700,88,High,1
+2026/10/12 16:55:12,Chirag Aggarwal,Male,Economics,3rd Year,Day Scholar,Paytm,1,1600,55,Low,0
+2026/10/12 17:08:30,Payal Gadkari,Female,Computer Science,4th Year,Hostel,Google Pay,3,3900,82,Low,0
+2026/10/12 17:22:15,Saurabh Singhal,Male,Information Tech,2nd Year,Hostel,PhonePe,5,5200,89,High,2
+2026/10/12 17:35:40,Swati Oberoi,Female,Commerce & Mgmt,1st Year,Day Scholar,Google Pay,2,2400,67,Low,0
+2026/10/12 17:48:05,Vivek Goel,Male,Mechanical Engg,4th Year,Hostel,Google Pay,4,4800,86,High,1
+2026/10/12 18:02:22,Anushree Kaushik,Female,Civil Engg,3rd Year,Day Scholar,PhonePe,3,2900,73,Low,1
+2026/10/12 18:15:50,Parth Mathur,Male,Computer Science,1st Year,Hostel,Paytm,3,4100,80,Low,0
+2026/10/12 18:29:14,Pallavi Kadam,Female,Electronics & Comm,2nd Year,Day Scholar,Google Pay,2,2000,62,Low,0
+2026/10/12 18:42:38,Aman Rastogi,Male,Information Tech,3rd Year,Hostel,PhonePe,6,6000,93,High,3
+2026/10/12 18:55:02,Barkha Mittal,Female,Biotechnology,4th Year,Hostel,Google Pay,4,4500,85,High,1
+2026/10/12 19:10:20,Ritik Jain,Male,Commerce & Mgmt,2nd Year,Day Scholar,Google Pay,3,3400,77,High,0
+2026/10/12 19:24:45,Sakshi Sharma,Female,Computer Science,1st Year,Hostel,PhonePe,3,3700,79,Low,1
+2026/10/12 19:38:10,Gaurav Verma,Male,Mechanical Engg,4th Year,Hostel,Paytm,5,5300,90,High,2
+2026/10/12 19:50:35,Mahika Patel,Female,Information Tech,3rd Year,Day Scholar,Google Pay,2,2500,68,Low,0
+2026/10/12 20:05:00,Samarth Iyer,Male,Civil Engg,1st Year,Day Scholar,PhonePe,1,1900,60,Low,0
+2026/10/12 20:18:22,Muskan Gupta,Female,Computer Science,2nd Year,Hostel,PhonePe,4,4600,87,High,1
+2026/10/12 20:32:45,Abhinav Nair,Male,Electronics & Comm,3rd Year,Hostel,Google Pay,5,5700,92,High,2
+2026/10/12 20:45:10,Radhika Singh,Female,Economics,4th Year,Day Scholar,Paytm,2,2300,65,Low,0
+2026/10/12 21:00:30,Deepanshu Reddy,Male,Information Tech,2nd Year,Day Scholar,PhonePe,3,3100,75,Low,1
+2026/10/12 21:14:55,Garima Banerjee,Female,Commerce & Mgmt,1st Year,Hostel,Google Pay,4,4400,84,High,0
+2026/10/13 08:30:15,Tejas Rao,Male,Mechanical Engg,4th Year,Hostel,PhonePe,3,4000,81,Low,1
+2026/10/13 08:44:40,Archana Joshi,Female,Computer Science,3rd Year,Hostel,Google Pay,6,6200,95,High,2
+2026/10/13 08:58:02,Rishabh Mehta,Male,Electronics & Comm,1st Year,Day Scholar,Google Pay,2,2700,70,Low,0
+2026/10/13 09:12:25,Jahnvi Kulkarni,Female,Civil Engg,2nd Year,Day Scholar,PhonePe,1,1800,59,Low,0
+2026/10/13 09:26:50,Manan Das,Male,Computer Science,3rd Year,Hostel,Paytm,4,4700,86,High,1
+2026/10/13 09:40:15,Trisha Mishra,Female,Information Tech,4th Year,Hostel,Google Pay,5,5400,91,High,2
+2026/10/13 09:55:38,Keshav Sen,Male,Commerce & Mgmt,2nd Year,Day Scholar,PhonePe,3,3200,76,Low,0
+2026/10/13 10:10:02,Malavika Choudhury,Female,Biotechnology,1st Year,Day Scholar,Google Pay,2,2200,63,Low,0
+2026/10/13 10:24:25,Ujjwal Saxena,Male,Computer Science,4th Year,Hostel,Google Pay,5,5600,92,High,2
+2026/10/13 10:38:50,Shalini Bhat,Female,Electronics & Comm,3rd Year,Hostel,PhonePe,4,4500,85,High,1
+2026/10/13 10:52:14,Soumyadeep Pillai,Male,Mechanical Engg,1st Year,Hostel,PhonePe,3,3800,80,Low,0
+2026/10/13 11:06:40,Debolina Agarwal,Female,Information Tech,2nd Year,Day Scholar,Paytm,2,2400,68,Low,1
+2026/10/13 11:20:05,Anmol Trivedi,Male,Economics,3rd Year,Day Scholar,Google Pay,3,3500,79,High,0
+2026/10/13 11:34:30,Kashish Deshmukh,Female,Commerce & Mgmt,4th Year,Day Scholar,PhonePe,2,2100,61,Low,0
+2026/10/13 11:48:55,Hardik Pandey,Male,Computer Science,2nd Year,Hostel,Google Pay,6,6400,96,High,3
+2026/10/13 12:02:20,Vidhi Menon,Female,Civil Engg,1st Year,Hostel,PhonePe,4,4800,88,High,1
+2026/10/13 12:16:45,Vaibhav Kapoor,Male,Mechanical Engg,4th Year,Day Scholar,Google Pay,1,1500,54,Low,0
+2026/10/13 12:30:10,Nikita Goswami,Female,Computer Science,3rd Year,Hostel,Paytm,3,4100,82,Low,1
+2026/10/13 12:44:35,Chinmay Jha,Male,Electronics & Comm,1st Year,Hostel,PhonePe,5,5500,91,High,2
+2026/10/13 12:58:00,Sayali Bhatia,Female,Information Tech,2nd Year,Day Scholar,Google Pay,3,2800,72,Low,0
+2026/10/13 13:12:22,Akshat Chauhan,Male,Commerce & Mgmt,3rd Year,Day Scholar,PhonePe,2,2600,70,Low,1
+2026/10/13 13:26:45,Avani Rathi,Female,Biotechnology,4th Year,Hostel,Google Pay,4,4300,84,High,0
+2026/10/13 13:40:10,Tarun Tiwari,Male,Computer Science,2nd Year,Hostel,Paytm,5,5300,89,High,2
+2026/10/13 13:54:35,Tanya Hegde,Female,Economics,1st Year,Day Scholar,PhonePe,2,2300,66,Low,0
+2026/10/13 14:08:00,Naman Sethi,Male,Mechanical Engg,4th Year,Hostel,Google Pay,4,4900,87,High,1
+2026/10/13 14:22:25,Urvashi Dutta,Female,Information Tech,3rd Year,Day Scholar,Google Pay,3,3000,74,Low,0
+2026/10/13 14:36:50,Hrithik Nambiar,Male,Civil Engg,1st Year,Day Scholar,Paytm,1,1700,57,Low,0
+2026/10/13 14:50:15,Charu Shukla,Female,Computer Science,2nd Year,Hostel,PhonePe,5,5000,89,High,1
+2026/10/13 15:04:40,Dhruv Roy,Male,Electronics & Comm,3rd Year,Hostel,Google Pay,3,3900,81,Low,0
+2026/10/13 15:18:05,Pragya Kashyap,Female,Commerce & Mgmt,4th Year,Day Scholar,PhonePe,2,2500,69,Low,1
+2026/10/13 15:32:30,Omkar Somani,Male,Computer Science,2nd Year,Hostel,Google Pay,6,6100,94,High,2
+2026/10/13 15:46:55,Sanjana Aggarwal,Female,Biotechnology,1st Year,Hostel,PhonePe,4,4600,86,High,1
+2026/10/13 16:01:20,Sarthak Gadkari,Male,Mechanical Engg,4th Year,Day Scholar,Paytm,3,3300,77,High,0
+2026/10/13 16:15:45,Aishwarya Singhal,Female,Information Tech,3rd Year,Day Scholar,Google Pay,2,2200,65,Low,0
+2026/10/13 16:30:10,Lakshya Oberoi,Male,Computer Science,1st Year,Hostel,PhonePe,4,4700,85,High,2
+2026/10/13 16:44:35,Sanya Goel,Female,Economics,2nd Year,Day Scholar,Google Pay,1,1800,60,Low,0
+2026/10/13 16:58:00,Kartik Kaushik,Male,Electronics & Comm,3rd Year,Hostel,Google Pay,5,5800,93,High,1
+2026/10/13 17:12:25,Vani Mathur,Female,Civil Engg,4th Year,Hostel,Paytm,3,4000,81,Low,0
+2026/10/13 17:26:50,Aryan Kadam,Male,Commerce & Mgmt,2nd Year,Day Scholar,PhonePe,2,2700,71,Low,1
+2026/10/13 17:41:15,Rhea Rastogi,Female,Computer Science,1st Year,Hostel,Google Pay,5,5200,90,High,2

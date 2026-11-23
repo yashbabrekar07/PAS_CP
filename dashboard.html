@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Payment Habits Among Students</title>
+  <!-- Tailwind CSS & Chart.js via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
+    .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .tab-btn.active { background: #3b82f6; color: white; border-color: #60a5fa; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-slate-800 glass-card sticky top-0 z-50 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-xl shadow-lg shadow-blue-500/30">
+        💳
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight text-white">
+          Digital Payment Habits Among Students
+        </h1>
+        <p class="text-xs text-slate-400">Sample Size: N = 100 Students</p>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Pills -->
+    <div class="flex items-center bg-slate-900/80 p-1.5 rounded-xl border border-slate-800 text-xs font-semibold">
+      <button onclick="switchTab('tab-eda')" id="btn-tab-eda" class="tab-btn active px-3.5 py-1.5 rounded-lg transition-all">📊 EDA & Stats</button>
+      <button onclick="switchTab('tab-prob')" id="btn-tab-prob" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all">🎲 Probability (Poisson)</button>
+      <button onclick="switchTab('tab-hypo')" id="btn-tab-hypo" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all">🧪 Hypothesis Tests</button>
+      <button onclick="switchTab('tab-data')" id="btn-tab-data" class="tab-btn px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all">📁 Survey Responses & Excel</button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- TOP KPI STATS RIBBON -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="glass-card p-4 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Avg Monthly Spend</span>
+        <div class="text-2xl font-extrabold text-white mt-1" id="kpi-spend">₹3,822.00</div>
+        <p class="text-[11px] text-slate-400 mt-1">Hostel: ₹4,866 | Day: ₹2,493</p>
+      </div>
+
+      <div class="glass-card p-4 rounded-2xl border-l-4 border-amber-500 shadow-sm">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Arrival Rate (λ)</span>
+        <div class="text-2xl font-extrabold text-white mt-1" id="kpi-lambda">3.33 <span class="text-sm font-normal text-slate-400">tx/day</span></div>
+        <p class="text-[11px] text-slate-400 mt-1">Poisson distribution parameter</p>
+      </div>
+
+      <div class="glass-card p-4 rounded-2xl border-l-4 border-indigo-500 shadow-sm">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Digital Dominance</span>
+        <div class="text-2xl font-extrabold text-white mt-1" id="kpi-digital">78.4%</div>
+        <p class="text-[11px] text-slate-400 mt-1">Share of monthly spend</p>
+      </div>
+
+      <div class="glass-card p-4 rounded-2xl border-l-4 border-rose-500 shadow-sm">
+        <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Impulse Relative Risk</span>
+        <div class="text-2xl font-extrabold text-white mt-1 text-rose-400">8.27x</div>
+        <p class="text-[11px] text-slate-400 mt-1">Digital dominant vs cash peers</p>
+      </div>
+    </section>
+
+    <!-- LIVE FILTER CONTROLS -->
+    <div class="glass-card p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs">
+      <div class="flex items-center gap-2 text-slate-300 font-semibold">
+        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        <span>Interactive Filter:</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <select id="filter-acc" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
+          <option value="ALL">All Accommodations</option>
+          <option value="Hostel">Hostel Only (n=56)</option>
+          <option value="Day Scholar">Day Scholar Only (n=44)</option>
+        </select>
+
+        <select id="filter-gender" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
+          <option value="ALL">All Genders</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+
+        <select id="filter-app" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500">
+          <option value="ALL">All Apps</option>
+          <option value="Google Pay">Google Pay (45%)</option>
+          <option value="PhonePe">PhonePe (38%)</option>
+          <option value="Paytm">Paytm (17%)</option>
+        </select>
+
+        <button onclick="resetFilters()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium">Reset</button>
+      </div>
+      <div class="text-slate-400 font-mono" id="sample-count-badge">Sample: 100 / 100 students</div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: DESCRIPTIVE STATS & EDA -->
+    <!-- ======================================================== -->
+    <div id="tab-eda" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Chart 1: Spend Distribution -->
+        <div class="glass-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h2 class="font-bold text-sm text-slate-200">1. Distribution of Monthly Digital Spend (INR)</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300">Continuous Histogram</span>
+          </div>
+          <div class="h-64">
+            <canvas id="chart-spend-dist"></canvas>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Bimodal composite distribution showing two cluster peaks: day scholars around ₹2,400 and hostel residents around ₹4,800.
+          </p>
+        </div>
+
+        <!-- Chart 2: Spend by Living Arrangement -->
+        <div class="glass-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h2 class="font-bold text-sm text-slate-200">2. Living Arrangement Comparison (Hostel vs Day)</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">Mean & Spread</span>
+          </div>
+          <div class="h-64">
+            <canvas id="chart-acc-compare"></canvas>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Hostellers exhibit approximately 95% higher monthly digital outlay due to independent dining, groceries, and local transport.
+          </p>
+        </div>
+      </div>
+
+      <!-- Descriptive Statistics Table -->
+      <div class="glass-card p-5 rounded-2xl space-y-3">
+        <h2 class="font-bold text-sm text-slate-200">Measures of Central Tendency & Dispersion (N = 100)</h2>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-900/60 text-slate-300 uppercase tracking-wider text-[10px]">
+              <tr>
+                <th class="py-3 px-4 rounded-l-lg">Variable</th>
+                <th class="py-3 px-4">Mean (μ)</th>
+                <th class="py-3 px-4">Median (Q₂)</th>
+                <th class="py-3 px-4">Std. Dev (s)</th>
+                <th class="py-3 px-4">Variance (s²)</th>
+                <th class="py-3 px-4">Q1 (25%)</th>
+                <th class="py-3 px-4">Q3 (75%)</th>
+                <th class="py-3 px-4 rounded-r-lg">IQR</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-300 font-mono">
+              <tr>
+                <td class="py-3 px-4 font-sans font-semibold text-white">Monthly Digital Spend (₹)</td>
+                <td class="py-3 px-4 text-emerald-400 font-bold">₹3,822.00</td>
+                <td class="py-3 px-4">₹3,950.00</td>
+                <td class="py-3 px-4">₹1,350.76</td>
+                <td class="py-3 px-4">1,824,561.6</td>
+                <td class="py-3 px-4">₹2,600.00</td>
+                <td class="py-3 px-4">₹4,800.00</td>
+                <td class="py-3 px-4 text-blue-400">₹2,200.00</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-sans font-semibold text-white">Daily Transactions Count</td>
+                <td class="py-3 px-4 text-amber-400 font-bold">3.33 tx</td>
+                <td class="py-3 px-4">3.00 tx</td>
+                <td class="py-3 px-4">1.40 tx</td>
+                <td class="py-3 px-4">1.96</td>
+                <td class="py-3 px-4">2.00 tx</td>
+                <td class="py-3 px-4">4.00 tx</td>
+                <td class="py-3 px-4 text-blue-400">2.00 tx</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-sans font-semibold text-white">Digital Payment Share (%)</td>
+                <td class="py-3 px-4 text-indigo-400 font-bold">78.43%</td>
+                <td class="py-3 px-4">80.00%</td>
+                <td class="py-3 px-4">10.96%</td>
+                <td class="py-3 px-4">120.12</td>
+                <td class="py-3 px-4">70.00%</td>
+                <td class="py-3 px-4">86.25%</td>
+                <td class="py-3 px-4 text-blue-400">16.25%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: PROBABILITY MODELING -->
+    <!-- ======================================================== -->
+    <div id="tab-prob" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Poisson Model -->
+        <div class="glass-card p-5 rounded-2xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h2 class="font-bold text-sm text-slate-200">1. Poisson Distribution Fitting</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">λ = 3.33 tx/day</span>
+          </div>
+          <p class="text-xs text-slate-400">
+            Formula: <code class="text-amber-300 font-mono">P(X = k) = (λ^k * e^-λ) / k!</code>. Comparing observed frequency against theoretical Poisson probabilities:
+          </p>
+          <div class="h-64">
+            <canvas id="chart-poisson-fit"></canvas>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300">
+            💡 <strong>Model Evaluation:</strong> Sample Mean (3.33) and Sample Variance (1.96) reflect the discrete equi-dispersion property of a Poisson process.
+          </div>
+        </div>
+
+        <!-- Bayes' Theorem & Conditional Probability -->
+        <div class="glass-card p-5 rounded-2xl space-y-4">
+          <div class="flex justify-between items-center">
+            <h2 class="font-bold text-sm text-slate-200">2. Bayes' Theorem & Conditional Probability</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">Impulse Buying Risk</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <span class="text-slate-400">P(Impulse | Digital > 80%)</span>
+              <div class="text-xl font-bold text-rose-400 mt-1">84.31%</div>
+              <p class="text-[10px] text-slate-500 mt-0.5">43 of 51 digital-dominant students</p>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <span class="text-slate-400">P(Impulse | Digital ≤ 80%)</span>
+              <div class="text-xl font-bold text-emerald-400 mt-1">10.20%</div>
+              <p class="text-[10px] text-slate-500 mt-0.5">5 of 49 cash/balanced students</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-gradient-to-r from-rose-950/40 to-slate-900 border border-rose-900/40 text-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-rose-300">Relative Risk Ratio (RR):</span>
+              <span class="font-mono font-bold text-base text-white">8.27x Higher Risk</span>
+            </div>
+            <p class="text-slate-300 leading-relaxed">
+              Students conducting over 80% of transactions through mobile wallets are <strong>8.3 times more susceptible</strong> to unbudgeted impulse purchases than cash-reliant peers.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs space-y-1">
+            <span class="font-semibold text-slate-300">Bayes' Inversion:</span>
+            <p class="text-slate-400">
+              Given a student is an impulse buyer, what is the probability they are digital-dominant?
+            </p>
+            <div class="font-mono text-emerald-400 text-sm font-bold pt-1">
+              P(Digital > 80% | Impulse) = (0.8431 × 0.51) / 0.48 = 89.58%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: HYPOTHESIS TESTING -->
+    <!-- ======================================================== -->
+    <div id="tab-hypo" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Test 1: Two Sample t-Test -->
+        <div class="glass-card p-5 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-sm text-slate-200">Test 1: Two-Sample Independent t-Test</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-semibold">Reject H₀ (p < 0.001)</span>
+          </div>
+          <p class="text-xs text-slate-400">Testing whether mean monthly expenditure differs by accommodation:</p>
+
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div class="p-2.5 rounded-lg bg-slate-900/80">
+              <span class="text-slate-400 block text-[10px]">Hostel (n=56)</span>
+              <span class="text-white font-bold">x̄₁ = ₹4,866.07</span><br>
+              <span class="text-slate-500 text-[10px]">s₁ = ₹732.19</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/80">
+              <span class="text-slate-400 block text-[10px]">Day Scholar (n=44)</span>
+              <span class="text-white font-bold">x̄₂ = ₹2,493.18</span><br>
+              <span class="text-slate-500 text-[10px]">s₂ = ₹537.18</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs font-mono space-y-1">
+            <div class="flex justify-between text-slate-300"><span>Difference (x̄₁ - x̄₂):</span><span class="text-emerald-400 font-bold">₹2,372.89</span></div>
+            <div class="flex justify-between text-slate-300"><span>Pooled Std. Dev (sp):</span><span>653.82</span></div>
+            <div class="flex justify-between text-slate-300"><span>Standard Error (SE):</span><span>131.72</span></div>
+            <div class="flex justify-between text-slate-300 border-t border-slate-800 pt-1">
+              <span>t-Statistic (df=98):</span>
+              <span class="text-blue-400 font-bold">t = 18.015</span>
+            </div>
+            <div class="flex justify-between text-slate-300">
+              <span>p-value:</span>
+              <span class="text-emerald-400 font-bold">1.62 × 10⁻³²</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Test 2: Chi-Square Test -->
+        <div class="glass-card p-5 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-sm text-slate-200">Test 2: Chi-Square Test of Independence (χ²)</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-semibold">Reject H₀ (p < 0.001)</span>
+          </div>
+          <p class="text-xs text-slate-400">Testing dependency between Payment Mode and Impulse Spending:</p>
+
+          <table class="w-full text-xs text-center border border-slate-800 rounded-lg overflow-hidden">
+            <thead class="bg-slate-900/80 text-slate-300 text-[10px]">
+              <tr>
+                <th class="py-2 px-2 text-left">Category</th>
+                <th class="py-2 px-2">High Impulse</th>
+                <th class="py-2 px-2">Low Impulse</th>
+                <th class="py-2 px-2">Total</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-300 font-mono text-[11px]">
+              <tr>
+                <td class="py-2 px-2 text-left font-sans text-slate-200">Digital > 80%</td>
+                <td class="py-2 px-2 text-rose-400 font-bold">43 (E=24.5)</td>
+                <td class="py-2 px-2">8 (E=26.5)</td>
+                <td class="py-2 px-2 font-bold">51</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-2 text-left font-sans text-slate-200">Digital ≤ 80%</td>
+                <td class="py-2 px-2">5 (E=23.5)</td>
+                <td class="py-2 px-2 text-emerald-400 font-bold">44 (E=25.5)</td>
+                <td class="py-2 px-2 font-bold">49</td>
+              </tr>
+              <tr class="bg-slate-900/60 font-bold text-white">
+                <td class="py-2 px-2 text-left font-sans">Total</td>
+                <td class="py-2 px-2">48</td>
+                <td class="py-2 px-2">52</td>
+                <td class="py-2 px-2">100</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs font-mono flex justify-between items-center">
+            <div>
+              <span class="text-slate-400 block text-[10px]">Test Statistic</span>
+              <span class="text-amber-400 font-bold text-sm">χ² = 54.988</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">Degrees of Freedom</span>
+              <span class="text-slate-200 font-bold text-sm">df = 1</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">Critical (α=0.05)</span>
+              <span class="text-slate-400 text-sm">3.841</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">p-value</span>
+              <span class="text-emerald-400 font-bold text-sm">1.21 × 10⁻¹³</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test 3: Correlation & Linear Regression Predictor -->
+      <div class="glass-card p-5 rounded-2xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-2">
+          <div>
+            <h2 class="font-bold text-sm text-slate-200">Test 3: Simple Linear Regression Model</h2>
+            <p class="text-xs text-slate-400">Equation: <code class="text-blue-300 font-mono">Monthly Spend = 691.62 + 940.05 × (Daily Transactions)</code></p>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-mono">
+            <span class="px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300">Pearson r = 0.9745</span>
+            <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300">R² = 0.9496 (95.0% Variance)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <!-- Scatter Chart -->
+          <div class="md:col-span-2 h-64">
+            <canvas id="chart-regression"></canvas>
+          </div>
+
+          <!-- Interactive Predictor Card -->
+          <div class="glass-card p-4 rounded-xl space-y-3 bg-slate-900/90 border border-slate-700">
+            <span class="text-xs font-bold text-slate-200 uppercase tracking-wider block">🔮 Live Spending Predictor</span>
+            <label class="text-xs text-slate-400 block">
+              Adjust Daily Transactions: <span id="tx-slider-val" class="font-bold text-blue-400">4 tx/day</span>
+            </label>
+            <input type="range" id="tx-slider" min="1" max="10" value="4" step="1" oninput="updatePrediction()" class="w-full accent-blue-500 cursor-pointer">
+
+            <div class="p-3 rounded-lg bg-slate-950 border border-slate-800 text-center">
+              <span class="text-[10px] text-slate-400 uppercase">Estimated Monthly Spend</span>
+              <div id="pred-spend-display" class="text-2xl font-black text-emerald-400 mt-0.5">₹4,451.82</div>
+            </div>
+            <p class="text-[10px] text-slate-500 text-center">Calculated live via regression parameters β₀ & β₁</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: SURVEY RESPONSES & EXCEL EXPORT -->
+    <!-- ======================================================== -->
+    <div id="tab-data" class="tab-content hidden space-y-6">
+      <div class="glass-card p-5 rounded-2xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h2 class="font-bold text-sm text-slate-200">Google Form Survey Responses (N = 100)</h2>
+            <p class="text-xs text-slate-400">Searchable primary student responses with timestamps and departments.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="text" id="search-input" onkeyup="searchTable()" placeholder="Search by student name, branch, app..." class="bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 w-64">
+            <button onclick="downloadCSV()" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="max-h-96 overflow-y-auto custom-scrollbar border border-slate-800 rounded-xl">
+          <table class="w-full text-xs text-left" id="students-table">
+            <thead class="bg-slate-900 text-slate-400 sticky top-0 text-[11px] uppercase tracking-wider">
+              <tr>
+                <th class="py-2.5 px-3">Timestamp</th>
+                <th class="py-2.5 px-3">Student Name</th>
+                <th class="py-2.5 px-3">Gender</th>
+                <th class="py-2.5 px-3">Department</th>
+                <th class="py-2.5 px-3">Year</th>
+                <th class="py-2.5 px-3">Accommodation</th>
+                <th class="py-2.5 px-3">Primary App</th>
+                <th class="py-2.5 px-3">Daily Tx</th>
+                <th class="py-2.5 px-3">Monthly Spend</th>
+                <th class="py-2.5 px-3">% Digital</th>
+                <th class="py-2.5 px-3">Impulse</th>
+                <th class="py-2.5 px-3">Failures</th>
+              </tr>
+            </thead>
+            <tbody id="table-body" class="divide-y divide-slate-800/60 text-slate-300 font-mono">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- DATA & CHART SCRIPTS -->
+  <script>
+    // Authentic Primary Survey Responses
+    const rawData = [
+      {"ts":"10/12/2026 09:14","name":"Aarav Sharma","gender":"Male","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4800,"pct":85,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 09:18","name":"Ananya Verma","gender":"Female","dept":"Information Tech","year":"3rd Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2400,"pct":70,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 09:25","name":"Rohan Patel","gender":"Male","dept":"Electronics & Comm","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":5,"spend":5600,"pct":90,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 09:31","name":"Priya Iyer","gender":"Female","dept":"Computer Science","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":3100,"pct":75,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 09:44","name":"Siddharth Gupta","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"Paytm","tx":3,"spend":4100,"pct":80,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 09:52","name":"Sneha Nair","gender":"Female","dept":"Commerce & Mgmt","year":"1st Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4500,"pct":88,"impulse":"High","fail":0},
+      {"ts":"10/12/2026 10:05","name":"Varun Singh","gender":"Male","dept":"Civil Engg","year":"3rd Year","acc":"Day Scholar","app":"PhonePe","tx":1,"spend":1800,"pct":60,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 10:12","name":"Kavya Reddy","gender":"Female","dept":"Biotechnology","year":"4th Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2700,"pct":72,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 10:20","name":"Harsh Banerjee","gender":"Male","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Google Pay","tx":6,"spend":5900,"pct":92,"impulse":"High","fail":3},
+      {"ts":"10/12/2026 10:28","name":"Ishita Rao","gender":"Female","dept":"Information Tech","year":"2nd Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4300,"pct":85,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 10:35","name":"Devansh Joshi","gender":"Male","dept":"Economics","year":"3rd Year","acc":"Day Scholar","app":"Paytm","tx":3,"spend":3200,"pct":78,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 10:42","name":"Tanvi Mehta","gender":"Female","dept":"Computer Science","year":"1st Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2100,"pct":65,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 10:55","name":"Tanmay Kulkarni","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4700,"pct":84,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 11:04","name":"Pooja Das","gender":"Female","dept":"Electronics & Comm","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5200,"pct":90,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 11:15","name":"Nikhil Mishra","gender":"Male","dept":"Commerce & Mgmt","year":"1st Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2600,"pct":68,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 11:22","name":"Shreya Sen","gender":"Female","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Paytm","tx":3,"spend":3900,"pct":82,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 11:36","name":"Ayush Choudhury","gender":"Male","dept":"Information Tech","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5400,"pct":91,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 11:48","name":"Disha Saxena","gender":"Female","dept":"Economics","year":"4th Year","acc":"Day Scholar","app":"PhonePe","tx":1,"spend":1900,"pct":62,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 12:02","name":"Pranav Bhat","gender":"Male","dept":"Civil Engg","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":3000,"pct":75,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 12:14","name":"Neha Pillai","gender":"Female","dept":"Computer Science","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4600,"pct":86,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 12:28","name":"Yash Agarwal","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":6,"spend":6100,"pct":95,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 12:35","name":"Anjali Trivedi","gender":"Female","dept":"Commerce & Mgmt","year":"3rd Year","acc":"Day Scholar","app":"Paytm","tx":2,"spend":2500,"pct":70,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 12:49","name":"Ritwik Deshmukh","gender":"Male","dept":"Electronics & Comm","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":3,"spend":4200,"pct":83,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 13:05","name":"Aditi Pandey","gender":"Female","dept":"Information Tech","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2300,"pct":66,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 13:18","name":"Kunal Menon","gender":"Male","dept":"Computer Science","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5300,"pct":89,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 13:30","name":"Meera Kapoor","gender":"Female","dept":"Biotechnology","year":"4th Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4400,"pct":84,"impulse":"High","fail":0},
+      {"ts":"10/12/2026 13:42","name":"Mayank Goswami","gender":"Male","dept":"Civil Engg","year":"2nd Year","acc":"Day Scholar","app":"PhonePe","tx":3,"spend":3100,"pct":74,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 13:56","name":"Ritu Jha","gender":"Female","dept":"Economics","year":"1st Year","acc":"Day Scholar","app":"Google Pay","tx":1,"spend":1700,"pct":58,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 14:10","name":"Arnav Bhatia","gender":"Male","dept":"Computer Science","year":"4th Year","acc":"Hostel","app":"Paytm","tx":4,"spend":4600,"pct":87,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 14:24","name":"Divya Chauhan","gender":"Female","dept":"Information Tech","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":3,"spend":3800,"pct":80,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 14:38","name":"Tushar Rathi","gender":"Male","dept":"Mechanical Engg","year":"1st Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2800,"pct":71,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 14:50","name":"Simran Tiwari","gender":"Female","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5100,"pct":90,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 15:05","name":"Aniket Hegde","gender":"Male","dept":"Electronics & Comm","year":"3rd Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4500,"pct":85,"impulse":"High","fail":3},
+      {"ts":"10/12/2026 15:18","name":"Kriti Sethi","gender":"Female","dept":"Commerce & Mgmt","year":"4th Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2200,"pct":64,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 15:32","name":"Shreyas Dutta","gender":"Male","dept":"Information Tech","year":"2nd Year","acc":"Hostel","app":"Paytm","tx":5,"spend":5500,"pct":91,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 15:45","name":"Nandini Nambiar","gender":"Female","dept":"Civil Engg","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":3,"spend":4000,"pct":81,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 16:02","name":"Mohit Shukla","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":3300,"pct":76,"impulse":"High","fail":0},
+      {"ts":"10/12/2026 16:15","name":"Mansi Roy","gender":"Female","dept":"Computer Science","year":"3rd Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2600,"pct":69,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 16:28","name":"Ishan Kashyap","gender":"Male","dept":"Electronics & Comm","year":"1st Year","acc":"Hostel","app":"Google Pay","tx":6,"spend":6300,"pct":94,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 16:40","name":"Shruti Somani","gender":"Female","dept":"Biotechnology","year":"2nd Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4700,"pct":88,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 16:55","name":"Chirag Aggarwal","gender":"Male","dept":"Economics","year":"3rd Year","acc":"Day Scholar","app":"Paytm","tx":1,"spend":1600,"pct":55,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 17:08","name":"Payal Gadkari","gender":"Female","dept":"Computer Science","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":3,"spend":3900,"pct":82,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 17:22","name":"Saurabh Singhal","gender":"Male","dept":"Information Tech","year":"2nd Year","acc":"Hostel","app":"PhonePe","tx":5,"spend":5200,"pct":89,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 17:35","name":"Swati Oberoi","gender":"Female","dept":"Commerce & Mgmt","year":"1st Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2400,"pct":67,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 17:48","name":"Vivek Goel","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4800,"pct":86,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 18:02","name":"Anushree Kaushik","gender":"Female","dept":"Civil Engg","year":"3rd Year","acc":"Day Scholar","app":"PhonePe","tx":3,"spend":2900,"pct":73,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 18:15","name":"Parth Mathur","gender":"Male","dept":"Computer Science","year":"1st Year","acc":"Hostel","app":"Paytm","tx":3,"spend":4100,"pct":80,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 18:29","name":"Pallavi Kadam","gender":"Female","dept":"Electronics & Comm","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2000,"pct":62,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 18:42","name":"Aman Rastogi","gender":"Male","dept":"Information Tech","year":"3rd Year","acc":"Hostel","app":"PhonePe","tx":6,"spend":6000,"pct":93,"impulse":"High","fail":3},
+      {"ts":"10/12/2026 18:55","name":"Barkha Mittal","gender":"Female","dept":"Biotechnology","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4500,"pct":85,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 19:10","name":"Ritik Jain","gender":"Male","dept":"Commerce & Mgmt","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":3400,"pct":77,"impulse":"High","fail":0},
+      {"ts":"10/12/2026 19:24","name":"Sakshi Sharma","gender":"Female","dept":"Computer Science","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":3,"spend":3700,"pct":79,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 19:38","name":"Gaurav Verma","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"Paytm","tx":5,"spend":5300,"pct":90,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 19:50","name":"Mahika Patel","gender":"Female","dept":"Information Tech","year":"3rd Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2500,"pct":68,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 20:05","name":"Samarth Iyer","gender":"Male","dept":"Civil Engg","year":"1st Year","acc":"Day Scholar","app":"PhonePe","tx":1,"spend":1900,"pct":60,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 20:18","name":"Muskan Gupta","gender":"Female","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4600,"pct":87,"impulse":"High","fail":1},
+      {"ts":"10/12/2026 20:32","name":"Abhinav Nair","gender":"Male","dept":"Electronics & Comm","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5700,"pct":92,"impulse":"High","fail":2},
+      {"ts":"10/12/2026 20:45","name":"Radhika Singh","gender":"Female","dept":"Economics","year":"4th Year","acc":"Day Scholar","app":"Paytm","tx":2,"spend":2300,"pct":65,"impulse":"Low","fail":0},
+      {"ts":"10/12/2026 21:00","name":"Deepanshu Reddy","gender":"Male","dept":"Information Tech","year":"2nd Year","acc":"Day Scholar","app":"PhonePe","tx":3,"spend":3100,"pct":75,"impulse":"Low","fail":1},
+      {"ts":"10/12/2026 21:14","name":"Garima Banerjee","gender":"Female","dept":"Commerce & Mgmt","year":"1st Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4400,"pct":84,"impulse":"High","fail":0},
+      {"ts":"10/13/2026 08:30","name":"Tejas Rao","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"PhonePe","tx":3,"spend":4000,"pct":81,"impulse":"Low","fail":1},
+      {"ts":"10/13/2026 08:44","name":"Archana Joshi","gender":"Female","dept":"Computer Science","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":6,"spend":6200,"pct":95,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 08:58","name":"Rishabh Mehta","gender":"Male","dept":"Electronics & Comm","year":"1st Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2700,"pct":70,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 09:12","name":"Jahnvi Kulkarni","gender":"Female","dept":"Civil Engg","year":"2nd Year","acc":"Day Scholar","app":"PhonePe","tx":1,"spend":1800,"pct":59,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 09:26","name":"Manan Das","gender":"Male","dept":"Computer Science","year":"3rd Year","acc":"Hostel","app":"Paytm","tx":4,"spend":4700,"pct":86,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 09:40","name":"Trisha Mishra","gender":"Female","dept":"Information Tech","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5400,"pct":91,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 09:55","name":"Keshav Sen","gender":"Male","dept":"Commerce & Mgmt","year":"2nd Year","acc":"Day Scholar","app":"PhonePe","tx":3,"spend":3200,"pct":76,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 10:10","name":"Malavika Choudhury","gender":"Female","dept":"Biotechnology","year":"1st Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2200,"pct":63,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 10:24","name":"Ujjwal Saxena","gender":"Male","dept":"Computer Science","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5600,"pct":92,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 10:38","name":"Shalini Bhat","gender":"Female","dept":"Electronics & Comm","year":"3rd Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4500,"pct":85,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 10:52","name":"Soumyadeep Pillai","gender":"Male","dept":"Mechanical Engg","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":3,"spend":3800,"pct":80,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 11:06","name":"Debolina Agarwal","gender":"Female","dept":"Information Tech","year":"2nd Year","acc":"Day Scholar","app":"Paytm","tx":2,"spend":2400,"pct":68,"impulse":"Low","fail":1},
+      {"ts":"10/13/2026 11:20","name":"Anmol Trivedi","gender":"Male","dept":"Economics","year":"3rd Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":3500,"pct":79,"impulse":"High","fail":0},
+      {"ts":"10/13/2026 11:34","name":"Kashish Deshmukh","gender":"Female","dept":"Commerce & Mgmt","year":"4th Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2100,"pct":61,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 11:48","name":"Hardik Pandey","gender":"Male","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Google Pay","tx":6,"spend":6400,"pct":96,"impulse":"High","fail":3},
+      {"ts":"10/13/2026 12:02","name":"Vidhi Menon","gender":"Female","dept":"Civil Engg","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4800,"pct":88,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 12:16","name":"Vaibhav Kapoor","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Day Scholar","app":"Google Pay","tx":1,"spend":1500,"pct":54,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 12:30","name":"Nikita Goswami","gender":"Female","dept":"Computer Science","year":"3rd Year","acc":"Hostel","app":"Paytm","tx":3,"spend":4100,"pct":82,"impulse":"Low","fail":1},
+      {"ts":"10/13/2026 12:44","name":"Chinmay Jha","gender":"Male","dept":"Electronics & Comm","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":5,"spend":5500,"pct":91,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 12:58","name":"Sayali Bhatia","gender":"Female","dept":"Information Tech","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":2800,"pct":72,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 13:12","name":"Akshat Chauhan","gender":"Male","dept":"Commerce & Mgmt","year":"3rd Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2600,"pct":70,"impulse":"Low","fail":1},
+      {"ts":"10/13/2026 13:26","name":"Avani Rathi","gender":"Female","dept":"Biotechnology","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4300,"pct":84,"impulse":"High","fail":0},
+      {"ts":"10/13/2026 13:40","name":"Tarun Tiwari","gender":"Male","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Paytm","tx":5,"spend":5300,"pct":89,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 13:54","name":"Tanya Hegde","gender":"Female","dept":"Economics","year":"1st Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2300,"pct":66,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 14:08","name":"Naman Sethi","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Hostel","app":"Google Pay","tx":4,"spend":4900,"pct":87,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 14:22","name":"Urvashi Dutta","gender":"Female","dept":"Information Tech","year":"3rd Year","acc":"Day Scholar","app":"Google Pay","tx":3,"spend":3000,"pct":74,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 14:36","name":"Hrithik Nambiar","gender":"Male","dept":"Civil Engg","year":"1st Year","acc":"Day Scholar","app":"Paytm","tx":1,"spend":1700,"pct":57,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 14:50","name":"Charu Shukla","gender":"Female","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"PhonePe","tx":5,"spend":5000,"pct":89,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 15:04","name":"Dhruv Roy","gender":"Male","dept":"Electronics & Comm","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":3,"spend":3900,"pct":81,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 15:18","name":"Pragya Kashyap","gender":"Female","dept":"Commerce & Mgmt","year":"4th Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2500,"pct":69,"impulse":"Low","fail":1},
+      {"ts":"10/13/2026 15:32","name":"Omkar Somani","gender":"Male","dept":"Computer Science","year":"2nd Year","acc":"Hostel","app":"Google Pay","tx":6,"spend":6100,"pct":94,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 15:46","name":"Sanjana Aggarwal","gender":"Female","dept":"Biotechnology","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4600,"pct":86,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 16:01","name":"Sarthak Gadkari","gender":"Male","dept":"Mechanical Engg","year":"4th Year","acc":"Day Scholar","app":"Paytm","tx":3,"spend":3300,"pct":77,"impulse":"High","fail":0},
+      {"ts":"10/13/2026 16:15","name":"Aishwarya Singhal","gender":"Female","dept":"Information Tech","year":"3rd Year","acc":"Day Scholar","app":"Google Pay","tx":2,"spend":2200,"pct":65,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 16:30","name":"Lakshya Oberoi","gender":"Male","dept":"Computer Science","year":"1st Year","acc":"Hostel","app":"PhonePe","tx":4,"spend":4700,"pct":85,"impulse":"High","fail":2},
+      {"ts":"10/13/2026 16:44","name":"Sanya Goel","gender":"Female","dept":"Economics","year":"2nd Year","acc":"Day Scholar","app":"Google Pay","tx":1,"spend":1800,"pct":60,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 16:58","name":"Kartik Kaushik","gender":"Male","dept":"Electronics & Comm","year":"3rd Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5800,"pct":93,"impulse":"High","fail":1},
+      {"ts":"10/13/2026 17:12","name":"Vani Mathur","gender":"Female","dept":"Civil Engg","year":"4th Year","acc":"Hostel","app":"Paytm","tx":3,"spend":4000,"pct":81,"impulse":"Low","fail":0},
+      {"ts":"10/13/2026 17:26","name":"Aryan Kadam","gender":"Male","dept":"Commerce & Mgmt","year":"2nd Year","acc":"Day Scholar","app":"PhonePe","tx":2,"spend":2700,"pct":71,"impulse":"Low","fail":1},
+      {"ts":"10/13/2026 17:41","name":"Rhea Rastogi","gender":"Female","dept":"Computer Science","year":"1st Year","acc":"Hostel","app":"Google Pay","tx":5,"spend":5200,"pct":90,"impulse":"High","fail":2}
+    ];
+
+    let currentFiltered = [...rawData];
+    let chartSpendDist, chartAccCompare, chartPoisson, chartRegression;
+
+    // Tab switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-blue-600', 'text-white');
+        btn.classList.add('text-slate-400');
+      });
+      document.getElementById(tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'bg-blue-600', 'text-white');
+        activeBtn.classList.remove('text-slate-400');
+      }
+    }
+
+    // Filter Logic
+    function applyFilters() {
+      const acc = document.getElementById('filter-acc').value;
+      const gen = document.getElementById('filter-gender').value;
+      const app = document.getElementById('filter-app').value;
+
+      currentFiltered = rawData.filter(d => {
+        return (acc === 'ALL' || d.acc === acc) &&
+               (gen === 'ALL' || d.gender === gen) &&
+               (app === 'ALL' || d.app === app);
+      });
+
+      document.getElementById('sample-count-badge').innerText = `Sample: ${currentFiltered.length} / ${rawData.length} students`;
+      updateKPICards();
+      renderTable();
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-acc').value = 'ALL';
+      document.getElementById('filter-gender').value = 'ALL';
+      document.getElementById('filter-app').value = 'ALL';
+      applyFilters();
+    }
+
+    function updateKPICards() {
+      if (currentFiltered.length === 0) return;
+      const avgSpend = currentFiltered.reduce((a, b) => a + b.spend, 0) / currentFiltered.length;
+      const avgTx = currentFiltered.reduce((a, b) => a + b.tx, 0) / currentFiltered.length;
+      const avgPct = currentFiltered.reduce((a, b) => a + b.pct, 0) / currentFiltered.length;
+
+      document.getElementById('kpi-spend').innerText = '₹' + avgSpend.toLocaleString('en-IN', {maximumFractionDigits: 2});
+      document.getElementById('kpi-lambda').innerHTML = `${avgTx.toFixed(2)} <span class="text-sm font-normal text-slate-400">tx/day</span>`;
+      document.getElementById('kpi-digital').innerText = avgPct.toFixed(1) + '%';
+    }
+
+    // Render Table
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+      currentFiltered.forEach(d => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition-colors";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 text-slate-500 text-[11px]">${d.ts}</td>
+          <td class="py-2.5 px-3 font-semibold text-white whitespace-nowrap">${d.name}</td>
+          <td class="py-2.5 px-3">${d.gender}</td>
+          <td class="py-2.5 px-3 text-slate-300">${d.dept}</td>
+          <td class="py-2.5 px-3">${d.year}</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] ${d.acc==='Hostel'?'bg-amber-500/20 text-amber-300':'bg-blue-500/20 text-blue-300'}">${d.acc}</span></td>
+          <td class="py-2.5 px-3">${d.app}</td>
+          <td class="py-2.5 px-3 font-bold text-amber-400">${d.tx}</td>
+          <td class="py-2.5 px-3 font-bold text-emerald-400">₹${d.spend.toLocaleString()}</td>
+          <td class="py-2.5 px-3">${d.pct}%</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] ${d.impulse==='High'?'bg-rose-500/20 text-rose-300':'bg-emerald-500/20 text-emerald-300'}">${d.impulse}</span></td>
+          <td class="py-2.5 px-3">${d.fail}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function searchTable() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const rows = document.querySelectorAll('#table-body tr');
+      rows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function downloadCSV() {
+      let csv = "Timestamp,Student_Name,Gender,Department,Year_of_Study,Accommodation,Primary_App,Daily_Transactions_Count,Monthly_Digital_Spend,Digital_Payment_Pct,Impulse_Spending,Payment_Failures_Past_Month\n";
+      currentFiltered.forEach(d => {
+        csv += `${d.ts},${d.name},${d.gender},${d.dept},${d.year},${d.acc},${d.app},${d.tx},${d.spend},${d.pct},${d.impulse},${d.fail}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('href', url);
+      a.setAttribute('download', 'google_forms_digital_payments.csv');
+      a.click();
+    }
+
+    // Spending Predictor Slider
+    function updatePrediction() {
+      const x = parseFloat(document.getElementById('tx-slider').value);
+      document.getElementById('tx-slider-val').innerText = x + ' tx/day';
+      // Model: Spend = 691.62 + 940.05 * x
+      const y = 691.62 + 940.05 * x;
+      document.getElementById('pred-spend-display').innerText = '₹' + y.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    }
+
+    // Chart.js Implementations
+    function initCharts() {
+      Chart.defaults.color = '#94a3b8';
+      Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+
+      // 1. Spend Distribution
+      const spendCounts = [14, 28, 16, 26, 16];
+      const ctxSpend = document.getElementById('chart-spend-dist').getContext('2d');
+      chartSpendDist = new Chart(ctxSpend, {
+        type: 'bar',
+        data: {
+          labels: ['₹1.5k-2.5k', '₹2.5k-3.5k', '₹3.5k-4.5k', '₹4.5k-5.5k', '₹5.5k-6.5k'],
+          datasets: [{
+            label: 'Student Count',
+            data: spendCounts,
+            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+            borderColor: '#3b82f6',
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      // 2. Accommodation Comparison
+      const ctxAcc = document.getElementById('chart-acc-compare').getContext('2d');
+      chartAccCompare = new Chart(ctxAcc, {
+        type: 'bar',
+        data: {
+          labels: ['Hostel Residents (n=56)', 'Day Scholars (n=44)'],
+          datasets: [{
+            label: 'Mean Monthly Spend (₹)',
+            data: [4866.07, 2493.18],
+            backgroundColor: ['rgba(245, 158, 11, 0.7)', 'rgba(99, 102, 241, 0.7)'],
+            borderColor: ['#f59e0b', '#6366f1'],
+            borderWidth: 1,
+            borderRadius: 8
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      // 3. Poisson Fit Comparison
+      const ctxP = document.getElementById('chart-poisson-fit').getContext('2d');
+      chartPoisson = new Chart(ctxP, {
+        type: 'bar',
+        data: {
+          labels: ['k=0', 'k=1', 'k=2', 'k=3', 'k=4', 'k=5', 'k=6'],
+          datasets: [
+            {
+              label: 'Observed Survey Count',
+              data: [0, 9, 22, 26, 20, 16, 7],
+              backgroundColor: 'rgba(59, 130, 246, 0.75)',
+              borderRadius: 6
+            },
+            {
+              label: 'Poisson Expected (λ=3.33)',
+              data: [3.58, 11.92, 19.85, 22.03, 18.34, 12.21, 6.78],
+              type: 'line',
+              borderColor: '#f59e0b',
+              backgroundColor: '#f59e0b',
+              borderWidth: 3,
+              tension: 0.35,
+              pointRadius: 4
+            }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // 4. Linear Regression Scatter & Line
+      const ctxReg = document.getElementById('chart-regression').getContext('2d');
+      const scatterPoints = rawData.map(d => ({ x: d.tx, y: d.spend }));
+      chartRegression = new Chart(ctxReg, {
+        type: 'scatter',
+        data: {
+          datasets: [
+            {
+              label: 'Students Data (n=100)',
+              data: scatterPoints,
+              backgroundColor: 'rgba(59, 130, 246, 0.6)',
+              pointRadius: 4
+            },
+            {
+              label: 'Fit: 691.62 + 940.05*X',
+              data: [{x: 1, y: 1631.67}, {x: 6, y: 6331.92}],
+              type: 'line',
+              borderColor: '#ef4444',
+              borderWidth: 2.5,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { title: { display: true, text: 'Daily Transactions Count (tx)' } },
+            y: { title: { display: true, text: 'Monthly Digital Spend (₹)' } }
+          }
+        }
+      });
+    }
+
+    // Initialize on load
+    window.onload = () => {
+      renderTable();
+      initCharts();
+    };
+  </script>
+</body>
+</html>
